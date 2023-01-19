@@ -15,8 +15,12 @@ public class GameView extends SurfaceView { //класс отрисовки иг
     private Bitmap clockwise_arrow;
     private Bitmap counterclockwise_arrow;
     private Bitmap menu_button;
+    private boolean first_appear=true;//проверка, первый ли раз появляется фигура
+    private long time; //поле для фиксирования времени
+    private long fall_time=2000;//время, через которое фигура опускается на одну клетку
     private GameThread gameLoop;//поток для изменения игры
     static Context c; //объект для доступа к базовым функциям
+    private Shapes sh;//действующая фигура
     public GameView(Context context)
     {
         super(context);
@@ -61,6 +65,8 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         counterclockwise_arrow=Bitmap.createScaledBitmap(counterclockwise_arrow, counterclockwise_arrow.getWidth()/4, counterclockwise_arrow.getHeight()/4, false);
         menu_button = BitmapFactory.decodeResource(getResources(), R.drawable.menu);
         menu_button=Bitmap.createScaledBitmap(menu_button, menu_button.getWidth()/4, menu_button.getHeight()/4, false);
+        sh=new Shapes(context);
+        time=System.currentTimeMillis();
     }
     protected void Draw(Context context,Canvas canvas) {
         canvas.drawBitmap(background, 0, 0, null);//отрисовка элементов окна
@@ -69,5 +75,15 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         canvas.drawBitmap(down_button, 460, 1950, null);
         canvas.drawBitmap(clockwise_arrow, 700, 1950, null);
         canvas.drawBitmap(counterclockwise_arrow, 50, 1950, null);
+        if(first_appear) { //если фигура появляется в первый раз
+            sh.shape_first_appear(canvas);//задаются координаты появления
+            first_appear=false;
+        }
+        if (System.currentTimeMillis()-time>fall_time) {//если прошло время падения - фигура опускается на одну клетку
+            sh.movement_vertically();
+            time=System.currentTimeMillis();
+        }
+        sh.draw_shape(canvas);//отрисовка фигуры
+
     }
 }
