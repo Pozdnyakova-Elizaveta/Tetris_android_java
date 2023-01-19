@@ -49,4 +49,40 @@ public class Shapes {//класс фигуры
             s[i].set_draw_y(s[i].get_draw_y() + Square.side_of_square + 3);
         }
     }
+    public void rotation(int k) {
+        int x_c = 0, y_c = 0;
+        int x = 0, y = 0;
+        int coord[][] = new int[4][2];
+        if (form == 0 || form == 1 || form == 3 || form == 5 || form == 4) {
+            x_c = s[1].get_x();
+            y_c = s[1].get_y();
+        }
+        if (form == 6) {
+            x_c = s[2].get_x();
+            y_c = s[2].get_y();
+        }
+        if (form != 2) {
+            if (k == 1) {
+                for (int i = 0; i != 4; i++) {
+                    x = x_c - (s[i].get_y() - y_c);
+                    y = y_c + (s[i].get_x() - x_c);
+                    s[i].set_x(x);
+                    s[i].set_draw_x(s[i].get_x() * Square.side_of_square + 113 + 3 * (s[i].get_x()));
+                    s[i].set_y(y);
+                    s[i].set_draw_y(207 + s[i].get_y() * Square.side_of_square+3*(s[i].get_y()));
+                }
+
+            }
+            if (k == 2) {
+                for (int i = 0; i != 4; i++) {
+                    x = x_c + (s[i].get_y() - y_c);
+                    y = y_c - (s[i].get_x() - x_c);
+                    s[i].set_x(x);
+                    s[i].set_draw_x(s[i].get_x() * Square.side_of_square + 113 + 3 * (s[i].get_x()));
+                    s[i].set_y(y);
+                    s[i].set_draw_y(207 + s[i].get_y() * Square.side_of_square+3*(s[i].get_y()));
+                }
+            }
+        }
+    }
 }
