@@ -1,15 +1,13 @@
 package com.example.tetris;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 
-public class MainActivity extends Activity {
+public class Rules extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, Game.class);
+        setContentView(R.layout.activity_rules);
     }
 }
