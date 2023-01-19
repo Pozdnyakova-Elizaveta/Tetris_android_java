@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 
 public class GameThread extends Thread { //поток для обновления рисования
     static final long FPS = 10;
-    private GameView view;
+    private GameView view; //окно отрисовки
     private boolean running = false;
 
     public GameThread(GameView view)
@@ -22,17 +22,18 @@ public class GameThread extends Thread { //поток для обновлени�
         long startTime;
         long sleepTime;
         while (running) { //запуск потока
-            Canvas c = null;
+            Canvas c = null; //объект,на котором осуществляется рисование
             startTime = System.currentTimeMillis();
             try {
-                c = view.getHolder().lockCanvas();
+                c = view.getHolder().lockCanvas(); //начало отрисовки
                 synchronized (view.getHolder()) {
+                    view.Draw(GameView.c,c);
                 }
             } finally {
                 if (c != null) {
-                    view.getHolder().unlockCanvasAndPost(c);
+                    view.getHolder().unlockCanvasAndPost(c);//завершение отрисовки
                 }
-                sleepTime = ticksPS-(System.currentTimeMillis() - startTime);
+                sleepTime = ticksPS-(System.currentTimeMillis() - startTime);//ограничение скорости отрисовки
                 try {
                     if (sleepTime > 0)
                         sleep(sleepTime);

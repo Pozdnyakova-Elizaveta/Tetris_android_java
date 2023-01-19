@@ -1,13 +1,22 @@
 package com.example.tetris;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class GameView extends SurfaceView { //класс отрисовки игры
     private SurfaceHolder holder;
-    private GameThread gameLoop;
+    private Bitmap background;//изображения фона,кнопок,поля
+    private Bitmap grid;
+    private Bitmap down_button;
+    private Bitmap clockwise_arrow;
+    private Bitmap counterclockwise_arrow;
+    private Bitmap menu_button;
+    private GameThread gameLoop;//поток для изменения игры
+    static Context c; //объект для доступа к базовым функциям
     public GameView(Context context)
     {
         super(context);
@@ -41,5 +50,24 @@ public class GameView extends SurfaceView { //класс отрисовки иг
             {
             }
         });
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.background);
+        //загрузка изображений, изменение размеров
+        grid = BitmapFactory.decodeResource(getResources(), R.drawable.grid);
+        down_button=BitmapFactory.decodeResource(getResources(), R.drawable.down);
+        down_button= Bitmap.createScaledBitmap(down_button, down_button.getWidth()/4, down_button.getHeight()/4, false);
+        clockwise_arrow=BitmapFactory.decodeResource(getResources(), R.drawable.clockwise_arrow);
+        clockwise_arrow=Bitmap.createScaledBitmap(clockwise_arrow, clockwise_arrow.getWidth()/4, clockwise_arrow.getHeight()/4, false);
+        counterclockwise_arrow=BitmapFactory.decodeResource(getResources(), R.drawable.counterclockwise_arrow);
+        counterclockwise_arrow=Bitmap.createScaledBitmap(counterclockwise_arrow, counterclockwise_arrow.getWidth()/4, counterclockwise_arrow.getHeight()/4, false);
+        menu_button = BitmapFactory.decodeResource(getResources(), R.drawable.menu);
+        menu_button=Bitmap.createScaledBitmap(menu_button, menu_button.getWidth()/4, menu_button.getHeight()/4, false);
+    }
+    protected void Draw(Context context,Canvas canvas) {
+        canvas.drawBitmap(background, 0, 0, null);//отрисовка элементов окна
+        canvas.drawBitmap(grid, 110, 200, null);
+        canvas.drawBitmap(menu_button, 900, 30, null);
+        canvas.drawBitmap(down_button, 460, 1950, null);
+        canvas.drawBitmap(clockwise_arrow, 700, 1950, null);
+        canvas.drawBitmap(counterclockwise_arrow, 50, 1950, null);
     }
 }
