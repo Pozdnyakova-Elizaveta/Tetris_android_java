@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -85,5 +86,25 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         }
         sh.draw_shape(canvas);//отрисовка фигуры
 
+    }
+    public boolean onTouchEvent(MotionEvent e) {
+        int x = (int) e.getX();
+        int y = (int) e.getY();
+        if(e.getAction() == MotionEvent.ACTION_DOWN){
+            if (x > 700 && y > 1950){
+                sh.rotation(1);
+            }
+            if (x > 50 && x < 450 && y > 1950){
+                sh.rotation(2);
+
+            }
+            if (x>450&&x<700&&y>1950){
+                while(!sh.collision_down()) {
+                    sh.movement_vertically();
+                }
+
+            }
+        }
+        return true;
     }
 }

@@ -44,9 +44,11 @@ public class Shapes {//класс фигуры
             c.drawBitmap(s[i].getSprite_square(), s[i].get_draw_x(), s[i].get_draw_y(), null);
     }
     public void movement_vertically() {//движение по вертикали
-        for (int i=0;i!=4;i++) {//задаются новые координаты по y
-            s[i].set_y(s[i].get_y() + 1);
-            s[i].set_draw_y(s[i].get_draw_y() + Square.side_of_square + 3);
+        if (!collision_down()) {
+            for (int i = 0; i != 4; i++) {//задаются новые координаты по y
+                s[i].set_y(s[i].get_y() + 1);
+                s[i].set_draw_y(s[i].get_draw_y() + Square.side_of_square + 3);
+            }
         }
     }
     public void rotation(int k) {
@@ -84,5 +86,13 @@ public class Shapes {//класс фигуры
                 }
             }
         }
+    }
+    public boolean collision_down(){
+        for (int i=0;i!=4;i++) {
+            if (s[i].get_y() == 19) {
+                return true;
+            }
+        }
+        return false;
     }
 }
