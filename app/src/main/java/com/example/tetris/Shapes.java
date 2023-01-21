@@ -164,4 +164,12 @@ public class Shapes {//класс фигуры
         for (int i=0;i!=4;i++)
             grid[s[i].get_x()][s[i].get_y()]= s[i].get_color_num()+1;
     }
+    public boolean collision_generation(int[][] grid) {//проверка на возможность создания новой фигуры
+        for (int i = 0; i != 4; i++) {
+            if (grid[s[i].get_x()][s[i].get_y()] == 0) //если на этом месте уже есть квадрат -
+                //фигуру создать не удастся
+                return true;
+        }
+        return false;
+    }
 }

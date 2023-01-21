@@ -1,6 +1,7 @@
 package com.example.tetris;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -87,8 +88,14 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         canvas.drawBitmap(clockwise_arrow, 700, 1950, null);
         canvas.drawBitmap(counterclockwise_arrow, 50, 1950, null);
         if(first_appear) { //если фигура появляется в первый раз
-            sh.shape_first_appear(canvas);//задаются координаты появления
-            first_appear=false;
+            if (!sh.collision_generation(grid_cells)) {//и она может появиться
+                sh.shape_first_appear(canvas);//задаются координаты появления фигуры
+                first_appear = false;
+            }
+            else {//иначе - выход в главное меню
+                Intent intent = new Intent(c, Menu.class);
+                c.startActivity(intent);
+            }
         }
         else {//иначе - прорисовка всех квадратов по массиву grid_cells
             Bitmap squares= BitmapFactory.decodeResource(getResources(),R.drawable.texture_squares);
@@ -135,6 +142,10 @@ public class GameView extends SurfaceView { //класс отрисовки иг
                 while(!sh.collision_down(grid_cells)) {
                     sh.movement_vertically(grid_cells);//падение фигуры до конца поля
                 }
+            }
+            if (x>450&&x<700&&y>1950){
+                Intent intent = new Intent(c, Menu.class);//выход в главное меню
+                c.startActivity(intent);
             }
         }
         return true;
