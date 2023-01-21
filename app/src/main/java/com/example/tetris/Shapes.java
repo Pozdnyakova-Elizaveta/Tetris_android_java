@@ -44,18 +44,33 @@ public class Shapes {//класс фигуры
             c.drawBitmap(s[i].getSprite_square(), s[i].get_draw_x(), s[i].get_draw_y(), null);
     }
     public void movement_vertically() {//движение по вертикали
-        if (!collision_down()) {
-            for (int i = 0; i != 4; i++) {//задаются новые координаты по y
+        if (!collision_down()) {//если возможно движение вниз
+            for (int i = 0; i != 4; i++) {//координата y увеличивается на 1
                 s[i].set_y(s[i].get_y() + 1);
                 s[i].set_draw_y(s[i].get_draw_y() + Square.side_of_square + 3);
             }
         }
     }
-    public boolean rotation(int k) {
-        int x_c = 0, y_c = 0;
-        int x = 0, y = 0;
-        int coord[][] = new int[4][2];
+    public void movement_horizontal(int last_x) {//движение по горизонтали
+        if (last_x == 1 && !collision_right()) {//если передана единица и движение вправо возможно
+            for (int i = 0; i != 4; i++) {//координата x увеличивается на 1
+                s[i].set_x(s[i].get_x() + 1);
+                s[i].set_draw_x(s[i].get_draw_x() + Square.side_of_square + 3);
+            }
+        }
+        if (last_x == 2 && !collision_left()) {//если передана двойка и движение влево возможно
+            for (int i = 0; i != 4; i++) {//координата x уменьшается на 1
+                s[i].set_x(s[i].get_x() - 1);
+                s[i].set_draw_x(s[i].get_draw_x() - Square.side_of_square - 3);
+            }
+        }
+    }
+    public boolean rotation(int k) {//поворот фигуры
+        int x_c = 0, y_c = 0;//координаты квадрата - центра вращения
+        int x = 0, y = 0;//новые координаты квадратов
+        int coord[][] = new int[4][2];//массив для сохранения новых координат квадратов
         if (form == 0 || form == 1 || form == 3 || form == 5 || form == 4) {
+            //определение координат вращения
             x_c = s[1].get_x();
             y_c = s[1].get_y();
         }
@@ -64,16 +79,18 @@ public class Shapes {//класс фигуры
             y_c = s[2].get_y();
         }
         if (form != 2) {
-            if (k == 1) {
+            if (k == 1) {//поворот по часовой стрелке
                 for (int i = 0; i != 4; i++) {
-                    x = x_c - (s[i].get_y() - y_c);
+                    x = x_c - (s[i].get_y() - y_c);//получение новых координат
                     y = y_c + (s[i].get_x() - x_c);
-                    if (x >= 0 && x <= 9 && y >= 0 && y <= 19) {
+                    if (x >= 0 && x <= 9 && y >= 0 && y <= 19) {//если координаты не выходят
+                        // за пределы поля - сохраняются в массиве
                         coord[i][0] = x;
                         coord[i][1] = y;
                     }
-                    else return false;
+                    else return false;//иначе выход из функции
                 }
+                //если все координаты в пределах поля, то они задаются фигуре
                 for (int i = 0; i != 4; i++) {
                     s[i].set_x(coord[i][0]);
                     s[i].set_draw_x(s[i].get_x() * Square.side_of_square + 113 + 3 * (s[i].get_x()));
@@ -81,16 +98,18 @@ public class Shapes {//класс фигуры
                     s[i].set_draw_y(207 + s[i].get_y() * Square.side_of_square + 3 * (s[i].get_y()));
                 }
             }
-            if (k == 2) {
+            if (k == 2) {//поворот против часовой стрелке
                 for (int i = 0; i != 4; i++) {
-                    x = x_c + (s[i].get_y() - y_c);
+                    x = x_c + (s[i].get_y() - y_c);//получение новых координат
                     y = y_c - (s[i].get_x() - x_c);
-                    if (x >= 0 && x <= 9 && y >= 0 && y <= 19) {
+                    if (x >= 0 && x <= 9 && y >= 0 && y <= 19) {//если координаты не выходят
+                        // за пределы поля - сохраняются в массиве
                         coord[i][0] = x;
                         coord[i][1] = y;
                     }
-                    else return false;
+                    else return false;//иначе выход из функции
                 }
+                //если все координаты в пределах поля, то они задаются фигуре
                 for (int i = 0; i != 4; i++) {
                     s[i].set_x(coord[i][0]);
                     s[i].set_draw_x(s[i].get_x() * Square.side_of_square + 113 + 3 * (s[i].get_x()));
@@ -101,11 +120,28 @@ public class Shapes {//класс фигуры
         }
         return true;
     }
-    public boolean collision_down(){
+    public boolean collision_down(){//проверка на возможность движния вниз
         for (int i=0;i!=4;i++) {
-            if (s[i].get_y() == 19) {
+            if (s[i].get_y() == 19) {//если один из квадратов находится на последнем ряду поля -
+                //движение невозможно
                 return true;
             }
+        }
+        return false;
+    }
+    public boolean collision_right(){//проверка на возможность движния вправо
+        for (int i=0;i!=4;i++){
+            if (s[i].get_x()==9) //если один из квадратов находится на последем столбце поля -
+                //движение невозможно
+                return true;
+        }
+        return false;
+    }
+    public boolean collision_left(){//проверка на возможность движния влево
+        for (int i=0;i!=4;i++){
+            if (s[i].get_x()==0)//если один из квадратов находится на первом столбце поля -
+                //движение невозможно
+                return true;
         }
         return false;
     }

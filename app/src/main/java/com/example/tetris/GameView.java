@@ -84,6 +84,7 @@ public class GameView extends SurfaceView { //класс отрисовки иг
             sh.movement_vertically();
             time=System.currentTimeMillis();
         }
+        sh.movement_horizontal(Game.last_x);//движение по горизонтали
         sh.draw_shape(canvas);//отрисовка фигуры
 
     }
@@ -91,16 +92,17 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         int x = (int) e.getX();
         int y = (int) e.getY();
         if(e.getAction() == MotionEvent.ACTION_DOWN){
+            //обработка нажатий на кнопку
             if (x > 700 && y > 1950){
-                sh.rotation(1);
+                sh.rotation(1);//поворот по часовой стрелке
             }
             if (x > 50 && x < 450 && y > 1950){
-                sh.rotation(2);
+                sh.rotation(2);//поворот против часовой стрелки
 
             }
             if (x>450&&x<700&&y>1950){
                 while(!sh.collision_down()) {
-                    sh.movement_vertically();
+                    sh.movement_vertically();//падение фигуры до конца поля
                 }
 
             }
