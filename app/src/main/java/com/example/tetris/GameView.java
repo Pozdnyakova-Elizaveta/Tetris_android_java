@@ -73,6 +73,7 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         grid_cells=new int [10][20];
         sh=new Shapes(context);
     }
+
     protected void Draw(Context context,Canvas canvas) {
         canvas.drawBitmap(background, 0, 0, null);//отрисовка элементов окна
         canvas.drawBitmap(grid, 110, 200, null);
@@ -92,19 +93,20 @@ public class GameView extends SurfaceView { //класс отрисовки иг
                 }
             }
             if (System.currentTimeMillis() - time > fall_time) {//если прошло время падения - фигура опускается на одну клетку
-                sh.movement_vertically();
+                sh.movement_vertically(grid_cells);
                 time = System.currentTimeMillis();
             }
-            sh.movement_horizontal(Game.last_x);//движение по горизонтали
+            sh.movement_horizontal(Game.last_x,grid_cells);//движение по горизонтали
         }
         sh.draw_shape(canvas);//отрисовка фигуры
-        if (sh.collision_down()){
+        if (sh.collision_down(grid_cells)){
             sh.write_to_array(grid_cells);//запись в массив поля фигуры
             sh=new Shapes(c);//новая фигура
             first_appear=true;
         }
 
     }
+
     public boolean onTouchEvent(MotionEvent e) {
         int x = (int) e.getX();
         int y = (int) e.getY();
@@ -118,8 +120,8 @@ public class GameView extends SurfaceView { //класс отрисовки иг
 
             }
             if (x>450&&x<700&&y>1950){
-                while(!sh.collision_down()) {
-                    sh.movement_vertically();//падение фигуры до конца поля
+                while(!sh.collision_down(grid_cells)) {
+                    sh.movement_vertically(grid_cells);//падение фигуры до конца поля
                 }
 
             }

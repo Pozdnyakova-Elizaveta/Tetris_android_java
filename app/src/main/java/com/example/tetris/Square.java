@@ -19,36 +19,47 @@ public class Square {//класс квадратов
         side_of_square=texture_squares.getWidth()/6;
         sprite_square = Bitmap.createBitmap(texture_squares, color_num*side_of_square, 0,side_of_square, side_of_square);//выделение спрайта квадрата из текстур
     }
+
     public Bitmap get_sprite_square(){
         return sprite_square;
     }
+
     public int get_color_num(){
         return color_num;
     }
+
     public int get_x(){
         return x;
     }
+
     public int get_y(){
         return y;
     }
+
     public void set_x(int new_x){
         x=new_x;
     }
+
     public void set_y(int new_y){
         y=new_y;
     }
+
     public int get_draw_x(){
         return draw_x;
     }
+
     public int get_draw_y(){
         return draw_y;
     }
+
     public void set_draw_x(int new_x){
         draw_x=new_x;
     }
+
     public void set_draw_y(int new_y){
         draw_y=new_y;
     }
+
     public Square(Square a){//конструктор копирования
         x=a.x;
         y=a.y;

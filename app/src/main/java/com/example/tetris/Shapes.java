@@ -27,6 +27,7 @@ public class Shapes {//класс фигуры
         if (form == 5) matrix_form = new int[][]{{color, color, 0, 0}, {0, color, color, 0}};//S
         if (form == 6) matrix_form = new int[][]{{0, color, color, 0}, {color, color, 0, 0}};//Z
     }
+
     public void shape_first_appear(Canvas c) {//первое появление фигуры
         int k = 0;
         for (int i = 0; i != 2; i++) {
@@ -41,32 +42,35 @@ public class Shapes {//класс фигуры
             }
         }
     }
+
     public void draw_shape(Canvas c) {//отрисовка фигуры
         for (int i = 0; i != 4; i++)
             c.drawBitmap(s[i].get_sprite_square(), s[i].get_draw_x(), s[i].get_draw_y(), null);
     }
-    public void movement_vertically() {//движение по вертикали
-        if (!collision_down()) {//если возможно движение вниз
+    public void movement_vertically(int[][] grid) {//движение по вертикали
+        if (!collision_down(grid)) {//если возможно движение вниз
             for (int i = 0; i != 4; i++) {//координата y увеличивается на 1
                 s[i].set_y(s[i].get_y() + 1);
                 s[i].set_draw_y(s[i].get_draw_y() + Square.side_of_square + 3);
             }
         }
     }
-    public void movement_horizontal(int last_x) {//движение по горизонтали
-        if (last_x == 1 && !collision_right()) {//если передана единица и движение вправо возможно
+
+    public void movement_horizontal(int last_x,int[][] grid) {//движение по горизонтали
+        if (last_x == 1 && !collision_right(grid)) {//если передана единица и движение вправо возможно
             for (int i = 0; i != 4; i++) {//координата x увеличивается на 1
                 s[i].set_x(s[i].get_x() + 1);
                 s[i].set_draw_x(s[i].get_draw_x() + Square.side_of_square + 3);
             }
         }
-        if (last_x == 2 && !collision_left()) {//если передана двойка и движение влево возможно
+        if (last_x == 2 && !collision_left(grid)) {//если передана двойка и движение влево возможно
             for (int i = 0; i != 4; i++) {//координата x уменьшается на 1
                 s[i].set_x(s[i].get_x() - 1);
                 s[i].set_draw_x(s[i].get_draw_x() - Square.side_of_square - 3);
             }
         }
     }
+
     public boolean rotation(int k) {//поворот фигуры
         int x_c = 0, y_c = 0;//координаты квадрата - центра вращения
         int x = 0, y = 0;//новые координаты квадратов
@@ -122,31 +126,40 @@ public class Shapes {//класс фигуры
         }
         return true;
     }
-    public boolean collision_down(){//проверка на возможность движния вниз
+
+    public boolean collision_down(int[][] grid){//проверка на возможность движния вниз
         for (int i=0;i!=4;i++) {
-            if (s[i].get_y() == 19) {//если один из квадратов находится на последнем ряду поля -
-                //движение невозможно
-                return true;
+            if (s[i].get_y() != 19) { //если ниже на одну клетку находится квадрат
+                if (grid[s[i].get_x()][s[i].get_y() + 1] != 0)
+                    return true;//движение невозможно
             }
+            else return true;//или если один из квадратов находится на последнем ряду поля
         }
         return false;
     }
-    public boolean collision_right(){//проверка на возможность движния вправо
+
+    public boolean collision_right(int [][] grid){//проверка на возможность движния вправо
         for (int i=0;i!=4;i++){
-            if (s[i].get_x()==9) //если один из квадратов находится на последем столбце поля -
-                //движение невозможно
-                return true;
+            if (s[i].get_x()!=9) {//если правее на одну клетку находится квадрат
+                if (grid[s[i].get_x() + 1][s[i].get_y()] != 0)
+                    return true;//движение невозможно
+            }
+            else return true;//или если один из квадратов находится на последем столбце поля
         }
         return false;
     }
-    public boolean collision_left(){//проверка на возможность движния влево
+
+    public boolean collision_left(int[][]grid){//проверка на возможность движния влево
         for (int i=0;i!=4;i++){
-            if (s[i].get_x()==0)//если один из квадратов находится на первом столбце поля -
-                //движение невозможно
-                return true;
+            if (s[i].get_x()!=0) { //если левее на одну клетку находится квадрат
+                if (grid[s[i].get_x() - 1][s[i].get_y()] != 0)
+                    return true;//движение невозможно
+            }
+            else return true;//или один из квадратов находится на первом столбце поля
         }
         return false;
     }
+
     public void write_to_array(int[][] grid){//запись фигуры в массив поля
         for (int i=0;i!=4;i++)
             grid[s[i].get_x()][s[i].get_y()]= s[i].get_color_num()+1;
