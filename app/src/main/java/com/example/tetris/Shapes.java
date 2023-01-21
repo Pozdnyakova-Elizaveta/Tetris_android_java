@@ -1,13 +1,15 @@
 package com.example.tetris;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 public class Shapes {//класс фигуры
     private int form;//номер фигуры
     public Square s[];//массив квдратов фигуры
     private int matrix_form[][];//массив для создания фигуры
-    int cell_number = 8;//(int) (Math.random() * 9);//квадрат верхней строки, от которого начнется
+    int cell_number = (int) (Math.random() * 9);//квадрат верхней строки, от которого начнется
     //отрисовка фигуры
     public Shapes(Context context) {
         form = (int) (Math.random() * 6);//случайное получение фигуры
@@ -41,7 +43,7 @@ public class Shapes {//класс фигуры
     }
     public void draw_shape(Canvas c) {//отрисовка фигуры
         for (int i = 0; i != 4; i++)
-            c.drawBitmap(s[i].getSprite_square(), s[i].get_draw_x(), s[i].get_draw_y(), null);
+            c.drawBitmap(s[i].get_sprite_square(), s[i].get_draw_x(), s[i].get_draw_y(), null);
     }
     public void movement_vertically() {//движение по вертикали
         if (!collision_down()) {//если возможно движение вниз
@@ -144,5 +146,9 @@ public class Shapes {//класс фигуры
                 return true;
         }
         return false;
+    }
+    public void write_to_array(int[][] grid){//запись фигуры в массив поля
+        for (int i=0;i!=4;i++)
+            grid[s[i].get_x()][s[i].get_y()]= s[i].get_color_num()+1;
     }
 }

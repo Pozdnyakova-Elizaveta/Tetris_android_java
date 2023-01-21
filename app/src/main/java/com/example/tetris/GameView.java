@@ -16,15 +16,18 @@ public class GameView extends SurfaceView { //класс отрисовки иг
     private Bitmap clockwise_arrow;
     private Bitmap counterclockwise_arrow;
     private Bitmap menu_button;
+    static Context c;
     private boolean first_appear=true;//проверка, первый ли раз появляется фигура
     private long time; //поле для фиксирования времени
     private long fall_time=2000;//время, через которое фигура опускается на одну клетку
     private GameThread gameLoop;//поток для изменения игры
-    static Context c; //объект для доступа к базовым функциям
-    private Shapes sh;//действующая фигура
+    private Shapes sh,sh1;//действующая фигура
+    private int grid_cells[][];//массив, сохраняющий расположения фигур на поле
+    static boolean game=true;
     public GameView(Context context)
     {
         super(context);
+        c=context;
         gameLoop = new GameThread(this);
         holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback()
@@ -66,8 +69,9 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         counterclockwise_arrow=Bitmap.createScaledBitmap(counterclockwise_arrow, counterclockwise_arrow.getWidth()/4, counterclockwise_arrow.getHeight()/4, false);
         menu_button = BitmapFactory.decodeResource(getResources(), R.drawable.menu);
         menu_button=Bitmap.createScaledBitmap(menu_button, menu_button.getWidth()/4, menu_button.getHeight()/4, false);
-        sh=new Shapes(context);
         time=System.currentTimeMillis();
+        grid_cells=new int [10][20];
+        sh=new Shapes(context);
     }
     protected void Draw(Context context,Canvas canvas) {
         canvas.drawBitmap(background, 0, 0, null);//отрисовка элементов окна
@@ -80,12 +84,25 @@ public class GameView extends SurfaceView { //класс отрисовки иг
             sh.shape_first_appear(canvas);//задаются координаты появления
             first_appear=false;
         }
-        if (System.currentTimeMillis()-time>fall_time) {//если прошло время падения - фигура опускается на одну клетку
-            sh.movement_vertically();
-            time=System.currentTimeMillis();
+        else {
+            for (int i=0;i!=10;i++) {
+                for (int j = 0; j != 20; j++) {
+                    if (grid_cells[i][j] != 0)
+                        canvas.drawBitmap(Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.texture_squares), (grid_cells[i][j]-1)*Square.side_of_square, 0,Square.side_of_square, Square.side_of_square), i * Square.side_of_square + 3*(i-1) + 113, j * Square.side_of_square + 207 + 3*(j-1), null);
+                }
+            }
+            if (System.currentTimeMillis() - time > fall_time) {//если прошло время падения - фигура опускается на одну клетку
+                sh.movement_vertically();
+                time = System.currentTimeMillis();
+            }
+            sh.movement_horizontal(Game.last_x);//движение по горизонтали
         }
-        sh.movement_horizontal(Game.last_x);//движение по горизонтали
         sh.draw_shape(canvas);//отрисовка фигуры
+        if (sh.collision_down()){
+            sh.write_to_array(grid_cells);//запись в массив поля фигуры
+            sh=new Shapes(c);//новая фигура
+            first_appear=true;
+        }
 
     }
     public boolean onTouchEvent(MotionEvent e) {

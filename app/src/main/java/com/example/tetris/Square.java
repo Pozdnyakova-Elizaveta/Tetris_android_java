@@ -19,7 +19,7 @@ public class Square {//класс квадратов
         side_of_square=texture_squares.getWidth()/6;
         sprite_square = Bitmap.createBitmap(texture_squares, color_num*side_of_square, 0,side_of_square, side_of_square);//выделение спрайта квадрата из текстур
     }
-    public Bitmap getSprite_square(){
+    public Bitmap get_sprite_square(){
         return sprite_square;
     }
     public int get_color_num(){

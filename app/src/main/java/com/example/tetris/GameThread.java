@@ -38,7 +38,7 @@ public class GameThread extends Thread { //поток для обновлени�
                     if (sleepTime > 0)
                         sleep(sleepTime);
                     else
-                        sleep(10);
+                        sleep(100);
                 } catch (Exception e) {}
             }
         }
