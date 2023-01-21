@@ -17,13 +17,13 @@ public class GameView extends SurfaceView { //класс отрисовки иг
     private Bitmap counterclockwise_arrow;
     private Bitmap menu_button;
     static Context c;
+    private int score=0;
     private boolean first_appear=true;//проверка, первый ли раз появляется фигура
     private long time; //поле для фиксирования времени
     private long fall_time=2000;//время, через которое фигура опускается на одну клетку
     private GameThread gameLoop;//поток для изменения игры
     private Shapes sh,sh1;//действующая фигура
     private int grid_cells[][];//массив, сохраняющий расположения фигур на поле
-    static boolean game=true;
     public GameView(Context context)
     {
         super(context);
@@ -32,6 +32,7 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback()
         {
+
             public void surfaceDestroyed(SurfaceHolder holder)//удаление области рисования
             {
                 boolean retry = true; //закрытие потока
@@ -62,13 +63,17 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         //загрузка изображений, изменение размеров
         grid = BitmapFactory.decodeResource(getResources(), R.drawable.grid);
         down_button=BitmapFactory.decodeResource(getResources(), R.drawable.down);
-        down_button= Bitmap.createScaledBitmap(down_button, down_button.getWidth()/4, down_button.getHeight()/4, false);
+        down_button= Bitmap.createScaledBitmap(down_button, down_button.getWidth()/4,
+                down_button.getHeight()/4, false);
         clockwise_arrow=BitmapFactory.decodeResource(getResources(), R.drawable.clockwise_arrow);
-        clockwise_arrow=Bitmap.createScaledBitmap(clockwise_arrow, clockwise_arrow.getWidth()/4, clockwise_arrow.getHeight()/4, false);
+        clockwise_arrow=Bitmap.createScaledBitmap(clockwise_arrow, clockwise_arrow.getWidth()/4,
+                clockwise_arrow.getHeight()/4, false);
         counterclockwise_arrow=BitmapFactory.decodeResource(getResources(), R.drawable.counterclockwise_arrow);
-        counterclockwise_arrow=Bitmap.createScaledBitmap(counterclockwise_arrow, counterclockwise_arrow.getWidth()/4, counterclockwise_arrow.getHeight()/4, false);
+        counterclockwise_arrow=Bitmap.createScaledBitmap(counterclockwise_arrow,
+                counterclockwise_arrow.getWidth()/4, counterclockwise_arrow.getHeight()/4, false);
         menu_button = BitmapFactory.decodeResource(getResources(), R.drawable.menu);
-        menu_button=Bitmap.createScaledBitmap(menu_button, menu_button.getWidth()/4, menu_button.getHeight()/4, false);
+        menu_button=Bitmap.createScaledBitmap(menu_button, menu_button.getWidth()/4,
+                menu_button.getHeight()/4, false);
         time=System.currentTimeMillis();
         grid_cells=new int [10][20];
         sh=new Shapes(context);
@@ -85,11 +90,17 @@ public class GameView extends SurfaceView { //класс отрисовки иг
             sh.shape_first_appear(canvas);//задаются координаты появления
             first_appear=false;
         }
-        else {
+        else {//иначе - прорисовка всех квадратов по массиву grid_cells
+            Bitmap squares= BitmapFactory.decodeResource(getResources(),R.drawable.texture_squares);
             for (int i=0;i!=10;i++) {
                 for (int j = 0; j != 20; j++) {
-                    if (grid_cells[i][j] != 0)
-                        canvas.drawBitmap(Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.texture_squares), (grid_cells[i][j]-1)*Square.side_of_square, 0,Square.side_of_square, Square.side_of_square), i * Square.side_of_square + 3*(i-1) + 113, j * Square.side_of_square + 207 + 3*(j-1), null);
+                    if (grid_cells[i][j] != 0) {
+                        int x = (grid_cells[i][j] - 1) * Square.side_of_square;
+                        int left = i * Square.side_of_square + 3 * (i - 1) + 113;
+                        int top = j * Square.side_of_square + 207 + 3 * (j - 1);
+                        Bitmap one_squares =Bitmap.createBitmap(squares, x,0, Square.side_of_square, Square.side_of_square);
+                        canvas.drawBitmap(one_squares, left, top, null);
+                    }
                 }
             }
             if (System.currentTimeMillis() - time > fall_time) {//если прошло время падения - фигура опускается на одну клетку
@@ -101,6 +112,7 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         sh.draw_shape(canvas);//отрисовка фигуры
         if (sh.collision_down(grid_cells)){
             sh.write_to_array(grid_cells);//запись в массив поля фигуры
+            line_check(grid_cells,canvas);//проверка на наличие заполненных строк
             sh=new Shapes(c);//новая фигура
             first_appear=true;
         }
@@ -123,9 +135,54 @@ public class GameView extends SurfaceView { //класс отрисовки иг
                 while(!sh.collision_down(grid_cells)) {
                     sh.movement_vertically(grid_cells);//падение фигуры до конца поля
                 }
-
             }
         }
         return true;
+    }
+
+    public void line_check(int massiv[][], Canvas canvas){
+        int string_grid[]=new int[20];//массив для отметки, заполнена ли строка
+        int coefficient=1;//коэффицент увеличения очков при комбо
+        int i,j;//индексы
+        for (j=0;j!=20;j++){
+            int count=0;
+            for (i=0;i!=10;i++){
+                if (massiv[i][j]!=0) count++;//проверка, есть ли на этой клетке квадрат
+            }
+            if (count==10) {//если все клетки в ряду заполнены
+                score+=10*coefficient;//добавление баллов
+                coefficient++;
+                string_grid[j]=1;//отметка в массиве о заполненности строки
+            }
+            else string_grid[j]=0;
+        }
+        int k=0;
+        while (k!=20) {//проход по всему массиву отметок
+            if (string_grid[k] == 1) {//если строка заполнена
+                time = System.currentTimeMillis();
+                Bitmap brocken_squares=BitmapFactory.decodeResource(getResources(), R.drawable.brocken_squares);
+                while (System.currentTimeMillis()-time<1000) {
+                    for (i = 0; i != 10; i++) {
+                        int x = (grid_cells[i][k] - 1) * Square.side_of_square;
+                        Bitmap one_brocken_square = Bitmap.createBitmap(brocken_squares, x, 0, Square.side_of_square, Square.side_of_square);
+                        int left = i * Square.side_of_square + 3 * (i - 1) + 113;
+                        int top = k * Square.side_of_square + 207 + 3 * (k - 1);
+                        canvas.drawBitmap(one_brocken_square, left, top, null);
+                    }
+                    //sh.draw_shape(canvas);
+                }
+                for (i = k; i != 0; i--) {
+                    for (j = 0; j != 10; j++) {
+                        grid_cells[j][i] = grid_cells[j][i - 1];//все строки выше сдвигаются вниз
+                    }
+                }
+                if (k==19) k=k+1;
+                else if (string_grid[k + 1] != 1) k = k + 1;
+            }
+            else k=k+1;
+        }
+        if (score>=10) fall_time=1500;//при определенном счете скорость игры увеличивается
+        if (score>=30) fall_time=500;
+
     }
 }
