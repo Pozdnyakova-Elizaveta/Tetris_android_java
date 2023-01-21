@@ -7,7 +7,7 @@ public class Shapes {//класс фигуры
     private int form;//номер фигуры
     public Square s[];//массив квдратов фигуры
     private int matrix_form[][];//массив для создания фигуры
-    int cell_number = (int) (Math.random() * 9);//квадрат верхней строки, от которого начнется
+    int cell_number = 8;//(int) (Math.random() * 9);//квадрат верхней строки, от которого начнется
     //отрисовка фигуры
     public Shapes(Context context) {
         form = (int) (Math.random() * 6);//случайное получение фигуры
@@ -51,7 +51,7 @@ public class Shapes {//класс фигуры
             }
         }
     }
-    public void rotation(int k) {
+    public boolean rotation(int k) {
         int x_c = 0, y_c = 0;
         int x = 0, y = 0;
         int coord[][] = new int[4][2];
@@ -68,24 +68,38 @@ public class Shapes {//класс фигуры
                 for (int i = 0; i != 4; i++) {
                     x = x_c - (s[i].get_y() - y_c);
                     y = y_c + (s[i].get_x() - x_c);
-                    s[i].set_x(x);
-                    s[i].set_draw_x(s[i].get_x() * Square.side_of_square + 113 + 3 * (s[i].get_x()));
-                    s[i].set_y(y);
-                    s[i].set_draw_y(207 + s[i].get_y() * Square.side_of_square+3*(s[i].get_y()));
+                    if (x >= 0 && x <= 9 && y >= 0 && y <= 19) {
+                        coord[i][0] = x;
+                        coord[i][1] = y;
+                    }
+                    else return false;
                 }
-
+                for (int i = 0; i != 4; i++) {
+                    s[i].set_x(coord[i][0]);
+                    s[i].set_draw_x(s[i].get_x() * Square.side_of_square + 113 + 3 * (s[i].get_x()));
+                    s[i].set_y(coord[i][1]);
+                    s[i].set_draw_y(207 + s[i].get_y() * Square.side_of_square + 3 * (s[i].get_y()));
+                }
             }
             if (k == 2) {
                 for (int i = 0; i != 4; i++) {
                     x = x_c + (s[i].get_y() - y_c);
                     y = y_c - (s[i].get_x() - x_c);
-                    s[i].set_x(x);
+                    if (x >= 0 && x <= 9 && y >= 0 && y <= 19) {
+                        coord[i][0] = x;
+                        coord[i][1] = y;
+                    }
+                    else return false;
+                }
+                for (int i = 0; i != 4; i++) {
+                    s[i].set_x(coord[i][0]);
                     s[i].set_draw_x(s[i].get_x() * Square.side_of_square + 113 + 3 * (s[i].get_x()));
-                    s[i].set_y(y);
-                    s[i].set_draw_y(207 + s[i].get_y() * Square.side_of_square+3*(s[i].get_y()));
+                    s[i].set_y(coord[i][1]);
+                    s[i].set_draw_y(207 + s[i].get_y() * Square.side_of_square + 3 * (s[i].get_y()));
                 }
             }
         }
+        return true;
     }
     public boolean collision_down(){
         for (int i=0;i!=4;i++) {
