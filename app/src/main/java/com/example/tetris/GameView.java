@@ -88,9 +88,10 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         canvas.drawBitmap(clockwise_arrow, 700, 1950, null);
         canvas.drawBitmap(counterclockwise_arrow, 50, 1950, null);
         if(first_appear) { //если фигура появляется в первый раз
-            if (!sh.collision_generation(grid_cells)) {//и она может появиться
-                sh.shape_first_appear(canvas);//задаются координаты появления фигуры
+            if (sh.shape_first_appear(canvas,grid_cells)) {//и она может появиться - задаются
+                // координаты появления фигуры
                 first_appear = false;
+                sh.draw_shape(canvas);//отрисовка фигуры
             }
             else {//иначе - выход в главное меню
                 Intent intent = new Intent(c, Menu.class);
@@ -115,8 +116,8 @@ public class GameView extends SurfaceView { //класс отрисовки иг
                 time = System.currentTimeMillis();
             }
             sh.movement_horizontal(Game.last_x,grid_cells);//движение по горизонтали
+            sh.draw_shape(canvas);//отрисовка фигуры
         }
-        sh.draw_shape(canvas);//отрисовка фигуры
         if (sh.collision_down(grid_cells)){
             sh.write_to_array(grid_cells);//запись в массив поля фигуры
             line_check(grid_cells,canvas);//проверка на наличие заполненных строк
@@ -143,7 +144,7 @@ public class GameView extends SurfaceView { //класс отрисовки иг
                     sh.movement_vertically(grid_cells);//падение фигуры до конца поля
                 }
             }
-            if (x>450&&x<700&&y>1950){
+            if (x>900&&y>30&&y<120){
                 Intent intent = new Intent(c, Menu.class);//выход в главное меню
                 c.startActivity(intent);
             }

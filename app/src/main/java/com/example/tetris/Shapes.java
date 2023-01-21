@@ -28,7 +28,7 @@ public class Shapes {//класс фигуры
         if (form == 6) matrix_form = new int[][]{{0, color, color, 0}, {color, color, 0, 0}};//Z
     }
 
-    public void shape_first_appear(Canvas c) {//первое появление фигуры
+    public boolean shape_first_appear(Canvas c,int[][] grid) {//первое появление фигуры
         int k = 0;
         for (int i = 0; i != 2; i++) {
             for (int j = 0; j != 4; j++) {
@@ -37,10 +37,12 @@ public class Shapes {//класс фигуры
                     s[k].set_y(j);
                     s[k].set_draw_x(s[k].get_x() * Square.side_of_square + 113 + 3 * (cell_number));
                     s[k].set_draw_y(207 + s[k].get_y() * Square.side_of_square + 3 * (s[k].get_y()));
+                    if (collision_generation(grid)) return false;
                     k = k + 1;
                 }
             }
         }
+        return true;
     }
 
     public void draw_shape(Canvas c) {//отрисовка фигуры
@@ -166,7 +168,7 @@ public class Shapes {//класс фигуры
     }
     public boolean collision_generation(int[][] grid) {//проверка на возможность создания новой фигуры
         for (int i = 0; i != 4; i++) {
-            if (grid[s[i].get_x()][s[i].get_y()] == 0) //если на этом месте уже есть квадрат -
+            if (grid[s[i].get_x()][s[i].get_y()] != 0) //если на этом месте уже есть квадрат -
                 //фигуру создать не удастся
                 return true;
         }
