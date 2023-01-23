@@ -2,8 +2,10 @@ package com.example.tetris;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,6 +29,13 @@ public class Menu extends AppCompatActivity {
         param_button_game.topMargin = 1500;
         button_game.setLayoutParams(param_button_game);
         layout.addView(button_game);
+        button_game.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Обработка нажатия
+                Intent intent = new Intent(Menu.this, Game.class);
+                startActivity(intent);
+            }
+        });
         setContentView(layout);
         button_rules = new ImageButton(this);
         button_rules.setBackgroundColor(Color.TRANSPARENT);
@@ -36,6 +45,13 @@ public class Menu extends AppCompatActivity {
         param_button_rules.topMargin = 80;
         button_rules.setLayoutParams(param_button_rules);
         layout.addView(button_rules);
+        button_rules.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Обработка нажатия
+                Intent intent = new Intent(Menu.this, Rules.class);
+                startActivity(intent);
+            }
+        });
         setContentView(layout);
         button_exit = new ImageButton(this);
         button_exit.setBackgroundColor(Color.TRANSPARENT);
@@ -45,6 +61,12 @@ public class Menu extends AppCompatActivity {
         param_button_exit.topMargin = 1700;
         button_exit.setLayoutParams(param_button_exit);
         layout.addView(button_exit);
+        button_exit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Обработка нажатия
+                System.exit(0);
+            }
+        });
         setContentView(layout);
     }
 }
