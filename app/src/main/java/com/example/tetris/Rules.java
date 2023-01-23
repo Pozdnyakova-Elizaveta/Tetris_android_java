@@ -2,6 +2,8 @@ package com.example.tetris;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -24,10 +26,13 @@ public class Rules extends Activity {
         layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         button_back = new ImageButton(this);//кнопка выхода в меню
         button_back.setBackgroundColor(Color.TRANSPARENT);
-        button_back.setImageDrawable(getDrawable(R.drawable.menu));
-        LinearLayout.LayoutParams param_button_exit = new LinearLayout.LayoutParams(300,150);
-        param_button_exit.leftMargin = 750;//расположение кнопки
-        param_button_exit.topMargin = 1700;
+        Bitmap back= BitmapFactory.decodeResource(getResources(), R.drawable.menu);
+        back=Bitmap.createScaledBitmap(back, back.getWidth()/3,
+                back.getHeight()/3, false);
+        button_back.setImageBitmap(back);//установка изображения
+        LinearLayout.LayoutParams param_button_exit = new LinearLayout.LayoutParams(300,300);
+        param_button_exit.leftMargin = 800;//расположение кнопки
+        param_button_exit.topMargin = 1900;
         button_back.setLayoutParams(param_button_exit);
         layout.addView(button_back);
         textView = new TextView(this);// установка текста правил

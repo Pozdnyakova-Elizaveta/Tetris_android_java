@@ -18,7 +18,8 @@ public class GameView extends SurfaceView { //класс отрисовки иг
     private Bitmap counterclockwise_arrow;
     private Bitmap menu_button;
     static Context c;
-    private int score=0;
+    static int score=0;
+    static boolean exit_game=false;
     private boolean first_appear=true;//проверка, первый ли раз появляется фигура
     private long time; //поле для фиксирования времени
     private long fall_time=2000;//время, через которое фигура опускается на одну клетку
@@ -28,6 +29,7 @@ public class GameView extends SurfaceView { //класс отрисовки иг
     public GameView(Context context)
     {
         super(context);
+        score=0;
         c=context;
         gameLoop = new GameThread(this);
         holder = getHolder();
@@ -96,6 +98,8 @@ public class GameView extends SurfaceView { //класс отрисовки иг
             else {//иначе - выход в главное меню
                 Intent intent = new Intent(c, Menu.class);
                 c.startActivity(intent);
+                exit_game=true;
+                gameLoop.setRunning(false);
             }
         }
         else {//иначе - прорисовка всех квадратов по массиву grid_cells
@@ -133,10 +137,10 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         if(e.getAction() == MotionEvent.ACTION_DOWN){
             //обработка нажатий на кнопку
             if (x > 700 && y > 1950){
-                sh.rotation(1);//поворот по часовой стрелке
+                sh.rotation(1,grid_cells);//поворот по часовой стрелке
             }
             if (x > 50 && x < 450 && y > 1950){
-                sh.rotation(2);//поворот против часовой стрелки
+                sh.rotation(2,grid_cells);//поворот против часовой стрелки
 
             }
             if (x>450&&x<700&&y>1950){
@@ -145,6 +149,7 @@ public class GameView extends SurfaceView { //класс отрисовки иг
                 }
             }
             if (x>900&&y>30&&y<120){
+                exit_game=true;
                 Intent intent = new Intent(c, Menu.class);//выход в главное меню
                 c.startActivity(intent);
             }
@@ -171,16 +176,14 @@ public class GameView extends SurfaceView { //класс отрисовки иг
         int k=0;
         while (k!=20) {//проход по всему массиву отметок
             if (string_grid[k] == 1) {//если строка заполнена
-                time = System.currentTimeMillis();
                 Bitmap brocken_squares=BitmapFactory.decodeResource(getResources(), R.drawable.brocken_squares);
-                while (System.currentTimeMillis()-time<1000) {
                     for (i = 0; i != 10; i++) {
                         int x = (grid_cells[i][k] - 1) * Square.side_of_square;
                         Bitmap one_brocken_square = Bitmap.createBitmap(brocken_squares, x, 0, Square.side_of_square, Square.side_of_square);
                         int left = i * Square.side_of_square + 3 * (i - 1) + 113;
                         int top = k * Square.side_of_square + 207 + 3 * (k - 1);
                         canvas.drawBitmap(one_brocken_square, left, top, null);
-                    }
+
                     //sh.draw_shape(canvas);
                 }
                 for (i = k; i != 0; i--) {

@@ -2,17 +2,21 @@ package com.example.tetris;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public class Menu extends AppCompatActivity {
+public class Menu extends Activity {
     private ImageView title;
     private ImageButton button_game;
     private ImageButton button_rules;
@@ -55,10 +59,13 @@ public class Menu extends AppCompatActivity {
         setContentView(layout);
         button_rules = new ImageButton(this);//кнопка перехода к правилам игры
         button_rules.setBackgroundColor(Color.TRANSPARENT);
-        button_rules.setImageDrawable(getDrawable(R.drawable.rules));//установка изображения
-        LinearLayout.LayoutParams param_button_rules = new LinearLayout.LayoutParams(300,150);
-        param_button_rules.leftMargin = 750;//расположение кнопки
-        param_button_rules.topMargin = 80;
+        Bitmap rules= BitmapFactory.decodeResource(getResources(), R.drawable.rules);
+        rules=Bitmap.createScaledBitmap(rules, rules.getWidth()/3,
+                rules.getHeight()/3, false);
+        button_rules.setImageBitmap(rules);//установка изображения
+        LinearLayout.LayoutParams param_button_rules = new LinearLayout.LayoutParams(200,200);
+        param_button_rules.leftMargin = 900;//расположение кнопки
+        param_button_rules.topMargin = 40;
         button_rules.setLayoutParams(param_button_rules);
         layout.addView(button_rules);
         button_rules.setOnClickListener(new View.OnClickListener() {
@@ -68,21 +75,34 @@ public class Menu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        setContentView(layout);
         button_exit = new ImageButton(this);//кнопка выхода
         button_exit.setBackgroundColor(Color.TRANSPARENT);
-        button_exit.setImageDrawable(getDrawable(R.drawable.menu));//установка изображения
-        LinearLayout.LayoutParams param_button_exit = new LinearLayout.LayoutParams(300,150);
-        param_button_exit.leftMargin = 750;//расположение кнопки на экране
-        param_button_exit.topMargin = 1700;
+        Bitmap exit= BitmapFactory.decodeResource(getResources(), R.drawable.menu);
+        exit=Bitmap.createScaledBitmap(exit, exit.getWidth()/3,
+                exit.getHeight()/3, false);
+        button_exit.setImageBitmap(exit);//установка изображения
+        LinearLayout.LayoutParams param_button_exit = new LinearLayout.LayoutParams(300,300);
+        param_button_exit.leftMargin = 900;//расположение кнопки на экране
+        param_button_exit.topMargin = 1900;
         button_exit.setLayoutParams(param_button_exit);
         layout.addView(button_exit);
         button_exit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Обработка нажатия - выход
-                System.exit(0);
+                finish();
             }
         });
+        if (GameView.exit_game) {
+            EditText editText = new EditText(this);
+            editText.setTextColor(Color.WHITE);
+            editText.setText("Игра окончена! Ваш счет: " + GameView.score);
+            RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params1.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            editText.setLayoutParams(params1);
+            layout.addView(editText);
+        }
         setContentView(layout);
     }
 }
