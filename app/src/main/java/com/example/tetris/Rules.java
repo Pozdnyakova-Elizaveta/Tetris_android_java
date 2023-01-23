@@ -1,15 +1,19 @@
 package com.example.tetris;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class Rules extends Activity {
+    private ImageButton button_back;
     private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +22,14 @@ public class Rules extends Activity {
         RelativeLayout layout = new RelativeLayout(this);
         layout.setBackgroundResource(R.drawable.background);
         layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        button_back = new ImageButton(this);
+        button_back.setBackgroundColor(Color.TRANSPARENT);
+        button_back.setImageDrawable(getDrawable(R.drawable.menu));
+        LinearLayout.LayoutParams param_button_exit = new LinearLayout.LayoutParams(300,150);
+        param_button_exit.leftMargin = 750;
+        param_button_exit.topMargin = 1700;
+        button_back.setLayoutParams(param_button_exit);
+        layout.addView(button_back);
         textView = new TextView(this);
         // установка фонового цвета
         textView.setBackgroundColor(Color.TRANSPARENT);
@@ -38,6 +50,13 @@ public class Rules extends Activity {
         // устанавливаем высоту текста
         textView.setTextSize(17);
         layout.addView(textView);
+        button_back.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Обработка нажатия
+                Intent intent = new Intent(Rules.this, Menu.class);
+                startActivity(intent);
+            }
+        });
         setContentView(layout);
     }
 }
