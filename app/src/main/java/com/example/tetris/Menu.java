@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class Menu extends AppCompatActivity {
+    private ImageView title;
     private ImageButton button_game;
     private ImageButton button_rules;
     private ImageButton button_exit;
@@ -21,6 +24,19 @@ public class Menu extends AppCompatActivity {
         RelativeLayout layout = new RelativeLayout(this);
         layout.setBackgroundResource(R.drawable.background);
         layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        title = new ImageView(this);
+        title.setImageResource(R.drawable.title);
+        RelativeLayout.LayoutParams params_title = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+        params_title.addRule(RelativeLayout.CENTER_IN_PARENT);
+        title.setLayoutParams(params_title);
+        layout.addView(title);
+
+        AlphaAnimation animation1 = new AlphaAnimation(0.0f, 1.0f);
+        animation1.setDuration(1500);
+        animation1.setStartOffset(2000);
+        animation1.setFillAfter(true);
+        title.startAnimation(animation1);
         button_game = new ImageButton(this);
         button_game.setBackgroundColor(Color.TRANSPARENT);
         button_game.setImageDrawable(getDrawable(R.drawable.start));
